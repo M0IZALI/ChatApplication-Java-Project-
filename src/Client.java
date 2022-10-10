@@ -140,7 +140,7 @@ public class Client{
         new Thread(r2).start();
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         new Client();
-    }
+    }*/
 } // end of class.
