@@ -7,11 +7,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Server{
-
-    ServerSocket serverSocket;
+    public String name = "Client";
+    ServerSocket serverSocket;  
     Socket clientSocket;
     BufferedReader read; //for reading from client.
     PrintWriter write;   //for writing to client.
+    
+    ReadThread rt;
+    WriteThread wt;
 
     //Declaring components
     JFrame frame = new JFrame();
@@ -26,12 +29,17 @@ public class Server{
         System.out.println("Waiting for connection...");
         clientSocket = serverSocket.accept();
         System.out.println("Connection Established");
+        System.out.println("fROM SERVER"+name);
         read = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         write = new PrintWriter(clientSocket.getOutputStream());
-        GUI();
+        create_GUI();
         events();
-        startReading();
-        startWriting();
+        ReadThread rt = new ReadThread(name, read, frame, msg_In ,msg_Area);
+        rt.start();
+        WriteThread wt = new WriteThread(read, write);
+        wt.start();
+        //startReading();
+        //startWriting();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -42,17 +50,14 @@ public class Server{
         msg_In.addKeyListener(new KeyListener(){
 
             @Override
-            public void keyTyped(KeyEvent e) {
-                // TODO Auto-generated method stub
-                
+            public void keyTyped(KeyEvent e) { 
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                // TODO Auto-generated method stub
                 if(e.getKeyCode() == 10){
                     String contentSend = msg_In.getText();
-                    msg_Area.append("Me: "+contentSend+"\n");
+                    msg_Area.append(contentSend+"\n");
                     write.println(contentSend);
                     write.flush();
                     String reset = "";
@@ -63,13 +68,11 @@ public class Server{
 
             @Override
             public void keyReleased(KeyEvent e){
-
             }
         });
-            
-    }
+    }//end of events.
 
-    public void GUI(){
+    public void create_GUI(){
         //gui code
         frame.setTitle("VChat[Server]");
         frame.setSize(500,600);
@@ -95,49 +98,11 @@ public class Server{
         frame.add(msg_In,BorderLayout.SOUTH);
 
         frame.setVisible(true);
-    }
+    }// end of create_GUI.
 
-    public void startReading(){
-        //Thread -> for reading the data.
-        Runnable r1 = ()->{
-            System.out.println("reader started");
-
-            while(true){
-                try{
-                String msg = read.readLine();
-                if(msg.equals("exit"))
-                {System.out.println("Client terminated the chat");
-                break;}
-                //System.out.println("Client: "+msg);
-                msg_Area.append("Client: "+msg+"\n");
-                }
-            catch(Exception e){
-                e.printStackTrace();}
-            }
-            
-        };
-        new Thread(r1).start();}
-
-    public void startWriting(){
-        //Thread -> for sending the data.
-        Runnable r2 = () ->{
-            System.out.println("Writer started.");
-            while(true){
-            try{
-                BufferedReader br1 = new BufferedReader(new InputStreamReader(System.in)); 
-                String send_msg = br1.readLine();
-                write.println(send_msg);
-                write.flush();
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-         }
-        };
-        new Thread(r2).start();
-    }
-
+ 
     public static void main(String[] args) {
         new Server();
     }
 }
+

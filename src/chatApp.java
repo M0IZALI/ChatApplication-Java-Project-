@@ -16,26 +16,25 @@ public class chatApp extends JFrame{
 		
 		JProgressBar pb=new JProgressBar();
 		pb.setStringPainted(true);
-		pb.setMaximum(0);
+		pb.setMinimum(0);
 		pb.setMaximum(100);
 		jp.add(pb, BorderLayout.SOUTH);
 		
 		add(jp);
-		
-		setTitle("ChatApp");
+
+		setSize(1280,720);
+		setLocationRelativeTo(null);
+		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setContentPane(jp);
-	    setLocation(200,300);
 	    setVisible(true);
 	    
-		setSize(400,300);
-		
 		for(int i=0; i<=100; i++){
+			try{
+				Thread.sleep(20 );
+			} catch(InterruptedException e){
+				e.printStackTrace();
+			}
 			pb.setValue(i);
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();}
 			if (i == 100){
 				setVisible(false);
 				new Client();
