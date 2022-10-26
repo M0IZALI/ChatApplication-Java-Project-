@@ -37,11 +37,11 @@ public class chatApp extends JFrame{
 			pb.setValue(i);
 			if (i == 100){
 				setVisible(false);
-				new Client();
+				new Login();
 			}
 		}//end of for loop
 	}// end of constructor.
-	public static void main(String args[]) {
-		new chatApp();
+	public static void main(String args[]){
+		new chatApp();    
 	}
 }// end of class.

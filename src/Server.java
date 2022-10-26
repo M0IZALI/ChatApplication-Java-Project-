@@ -7,12 +7,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Server{
-    public String name = "Client";
+    public String name;
     ServerSocket serverSocket;  
     Socket clientSocket;
     BufferedReader read; //for reading from client.
     PrintWriter write;   //for writing to client.
-    
     ReadThread rt;
     WriteThread wt;
 
@@ -23,13 +22,14 @@ public class Server{
     JTextField msg_In = new JTextField();
     Font font = new Font("Lato",Font.PLAIN,15);
 
-    public Server(){
+    public Server(String name){
+        this.name = name;
         try{
         serverSocket = new ServerSocket(7777);
         System.out.println("Waiting for connection...");
+        new Client(); 
         clientSocket = serverSocket.accept();
         System.out.println("Connection Established");
-        System.out.println("fROM SERVER"+name);
         read = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         write = new PrintWriter(clientSocket.getOutputStream());
         create_GUI();
@@ -78,6 +78,7 @@ public class Server{
         frame.setSize(500,600);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         //coding for components
         heading.setFont(font);
         msg_Area.setFont(font);
@@ -96,13 +97,6 @@ public class Server{
         frame.add(heading,BorderLayout.NORTH);
         frame.add(msg_Area,BorderLayout.CENTER);
         frame.add(msg_In,BorderLayout.SOUTH);
-
         frame.setVisible(true);
     }// end of create_GUI.
-
- 
-    public static void main(String[] args) {
-        new Server();
-    }
 }
-
